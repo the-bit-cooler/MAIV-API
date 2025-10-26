@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "ms-dotnettools.csdevkit",
+    "aaron-bond.better-comments",
+    "streetsidesoftware.code-spell-checker",
+    "ms-azuretools.vscode-azurefunctions",
+    "postman.postman-for-vscode",
+    "azurite.azurite",
+  ]
+}
