@@ -27,27 +27,15 @@ public class ExplainBibleVerse
     if (!Enum.TryParse(mode, true, out AiService.Mode aiMode))
       aiMode = AiService.Mode.Devotional; // default fallback
 
-    string userPrompt = $"Explain {book}:{chapter}:{verse} from the {version} version of the Bible. Do not use a title with the verse reference or quote at the top of your GitHub markdown response. Just go right into your explanation.";
-    string cacheId = $"{book}:{chapter}:{verse}:{version}";
-    string cachePartitionKey = $"{book}:Explanation:{aiMode}";
-    string cacheDescription = $"an explanation for {cacheId}";
-    string callerId = $"{nameof(ExplainBibleVerse)}({aiMode})";
-
     return new ContentResult
     {
-      Content = await aiService.GetChatCompletionAsync( //* returns an empty string if no chat is obtained
+      Content = await aiService.ExplainBibleVerseAsync(
         aiMode,
         version,
         book,
         chapter,
         verse,
-        userPrompt,
-        includeBibleChapterContext: true,
-        includeSimilarBibleVersesContext: true,
-        cacheId,
-        cachePartitionKey,
-        cacheDescription,
-        callerId
+        caller: $"{nameof(ExplainBibleVerse)}({aiMode})"
       ),
       ContentType = "text/plain",
       StatusCode = 200
