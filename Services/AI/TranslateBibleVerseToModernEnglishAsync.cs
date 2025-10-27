@@ -8,6 +8,9 @@ namespace ScripturAI.Services;
 
 public partial class AiService
 {
+  /// <summary>
+  /// Returns either a url to where the new translation was stored or an empty string if none can be obtained.
+  /// </summary>
   internal async Task<string> TranslateBibleVerseToModernEnglishAsync(
     Mode mode,
     string version,
