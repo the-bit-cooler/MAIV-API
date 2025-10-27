@@ -16,29 +16,26 @@ public class TranslateBibleVerseToModernEnglish
 
   [Function("TranslateBibleVerseToModernEnglish")]
   public async Task<IActionResult> Run(
-      [HttpTrigger(AuthorizationLevel.Function, "get", Route = "bible/{version}/{book}/{chapter}/{verse}/translate")] HttpRequestData req,
+      [HttpTrigger(AuthorizationLevel.Function, "get", Route = "bible/{version}/{book}/{chapter}/{verse}/translate/{mode}")] HttpRequestData req,
       string version,
       string book,
       int chapter,
-      int verse
+      int verse,
+      string mode
     )
   {
-    string cacheId = $"{book}:{chapter}:{verse}:{version}";
-    string cachePartitionKey = $"{book}:Translation";
-    string cacheDescription = $"a translation for {cacheId}";
-    string callerId = $"{nameof(TranslateBibleVerseToModernEnglish)}()";
+    if (!Enum.TryParse(mode, true, out AiService.Mode aiMode))
+      aiMode = AiService.Mode.Devotional; // default fallback
 
     return new ContentResult
     {
-      Content = await aiService.TranslateBibleVerseToModernEnglishAsync( //* returns an empty string if no chat is obtained
+      Content = await aiService.TranslateBibleVerseToModernEnglishAsync(
+        aiMode,
         version,
         book,
         chapter,
         verse,
-        cacheId,
-        cachePartitionKey,
-        cacheDescription,
-        callerId
+        caller: $"{book}:{chapter}:{verse}:{version}"
       ),
       ContentType = "text/plain",
       StatusCode = 200
