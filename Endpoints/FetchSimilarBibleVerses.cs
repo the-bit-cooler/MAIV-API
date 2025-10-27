@@ -27,7 +27,7 @@ public class FetchSimilarBibleVerses
     if (!Enum.TryParse(mode, true, out AiService.Mode aiMode))
       aiMode = AiService.Mode.Devotional; // default fallback
 
-    return new JsonResult(await dataService.GetSimilarBibleVersesAsync( //* returns an empty array if no similar verses are found
+    return new JsonResult(await dataService.GetSimilarBibleVersesAsync(
       aiMode,
       version,
       book,
