@@ -24,7 +24,7 @@ public partial class AiService
 
     try
     {
-      BlobClient blobClient = await dataService.GetBlobClientAsync($"explain/{version}/{book}/{chapter}/{verse}/{mode}.txt");
+      BlobClient blobClient = await dataService.GetBlobClientAsync($"explanation/{version}/{book}/{chapter}/{verse}/{mode}.txt");
 
       if (await blobClient.ExistsAsync()) return blobClient.Uri.ToString();
 
