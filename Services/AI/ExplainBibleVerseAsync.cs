@@ -20,7 +20,7 @@ public partial class AiService
     string caller
   )
   {
-    string callerId = $"{caller}->{nameof(AiService)}.{nameof(GetChatCompletionAsync)}";
+    string callerId = $"{caller}->{nameof(AiService)}.{nameof(ExplainBibleVerseAsync)}";
 
     try
     {
