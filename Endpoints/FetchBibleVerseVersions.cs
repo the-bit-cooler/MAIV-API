@@ -20,11 +20,10 @@ public class FetchBibleVerseVersions
     string version,
     string book,
     int chapter,
-    int verse,
-    string mode
+    int verse
     )
   {
-    return new JsonResult(await dataService.GetBibleVerseVersionsAsync( //* returns an empty array if no verse versions are found
+    return new JsonResult(await dataService.GetBibleVerseVersionsAsync(
       version,
       book,
       chapter,
