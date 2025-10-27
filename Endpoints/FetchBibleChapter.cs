@@ -22,7 +22,7 @@ public class FetchBibleChapter
     int chapter
     )
   {
-    return new JsonResult(await dataService.GetBibleChapterAsync( //* returns an empty array if the bible chapter is not retrieved
+    return new JsonResult(await dataService.GetBibleChapterAsync(
       version,
       book,
       chapter,
