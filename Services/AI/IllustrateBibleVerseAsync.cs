@@ -1,8 +1,5 @@
-using System.ClientModel;
-using System.Text;
 using Azure.Storage.Blobs;
 using Microsoft.Extensions.Logging;
-using OpenAI.Chat;
 using OpenAI.Images;
 
 namespace ScripturAI.Services;
