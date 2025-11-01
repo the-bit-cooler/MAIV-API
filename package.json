@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "format": "dotnet format MAIV-API.sln",
+    "generate-jwt-secret": "openssl rand -base64 64 | tr -d '\n' && echo",
     "prepare": "husky"
   },
   "devDependencies": {
