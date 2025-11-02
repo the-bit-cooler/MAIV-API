@@ -4,7 +4,7 @@ namespace ScripturAI.Services;
 
 public partial class DataService
 {
-  internal record User(string id, string collection, string token, string tokenExpiry);
+  internal record User(string id, string collection, string token, string tokenExpiry, bool tokenExpired);
   internal async Task<User> GetUserAsync(string email, string? token = null)
   {
     Container usersContainer = GetUsersContainer();
@@ -18,7 +18,7 @@ public partial class DataService
 
       // Create or update the user
       userResponse = await usersContainer.UpsertItemAsync<User>(
-        new(email, nameof(User), token, expiry),
+        new(email, nameof(User), token, expiry, false),
         new PartitionKey(nameof(User))
       );
     }
@@ -31,7 +31,7 @@ public partial class DataService
 
       if (token != user.token || DateTime.Parse(user.tokenExpiry) < DateTime.UtcNow)
       {
-        throw new Exception("Invalid or expired magic link.");
+        return new(user.id, user.collection, user.token, user.tokenExpiry, true);
       }
     }
 
