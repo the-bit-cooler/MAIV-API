@@ -4,8 +4,10 @@ namespace ScripturAI.Services;
 
 public partial class EmailService
 {
-  internal static bool ValidateEmail(string email)
+  internal static bool ValidateEmail(string? email)
   {
+    if (string.IsNullOrWhiteSpace(email)) return false;
+
     try
     {
       MailAddress addr = new(email);
