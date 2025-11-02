@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/the-bit-cooler/MAIV-API/compare/maiv-api-v1.1.0...maiv-api-v1.1.1) (2025-11-02)
+
+
+### 🐛 Bug Fixes
+
+* future-proof by returning user email from validated session token ([7e66405](https://github.com/the-bit-cooler/MAIV-API/commit/7e6640548527601c359972c09e7a2a85f063e4da))
+
 ## [1.1.0](https://github.com/the-bit-cooler/MAIV-API/compare/maiv-api-v1.0.1...maiv-api-v1.1.0) (2025-11-02)
 
 
