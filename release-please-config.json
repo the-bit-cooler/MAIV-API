@@ -1,5 +1,5 @@
 {
-  "release-type": "expo",
+  "release-type": "node",
   "packages": {
     ".": {
       "changelog-sections": [
