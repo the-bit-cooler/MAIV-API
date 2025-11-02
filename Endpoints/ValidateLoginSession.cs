@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
@@ -13,21 +12,26 @@ public class ValidateLoginSession(ILogger<ValidateLoginSession> logger)
   private readonly ILogger<ValidateLoginSession> logger = logger;
 
   [Function("ValidateLoginSession")]
-  public async Task<IActionResult> Run(
+  public IActionResult Run(
     [HttpTrigger(AuthorizationLevel.Function, "post", Route = "validate-login-session")] HttpRequestData req)
   {
     try
     {
-      string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-      RequestBody? data = JsonSerializer.Deserialize<RequestBody>(requestBody);
-
-      string? sessionToken = data?.sessionToken;
-      if (string.IsNullOrEmpty(sessionToken))
+      // Read the Authorization header
+      if (!req.Headers.TryGetValues("Authorization", out var authHeaderValues))
       {
         return new BadRequestResult();
       }
 
-      JwtService.ValidateSessionToken(sessionToken);
+      var authHeader = authHeaderValues.FirstOrDefault();
+      if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+      {
+        return new BadRequestResult();
+      }
+
+      string token = authHeader["Bearer ".Length..].Trim();
+
+      JwtService.ValidateSessionToken(token);
 
       return new OkResult();
     }
