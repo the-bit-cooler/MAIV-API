@@ -24,12 +24,7 @@ public class ValidateLoginSession(ILogger<ValidateLoginSession> logger)
       string? sessionToken = data?.sessionToken;
       if (string.IsNullOrEmpty(sessionToken))
       {
-        return new ContentResult
-        {
-          Content = "Missing session token.",
-          ContentType = "text/plain",
-          StatusCode = 400
-        };
+        return new BadRequestResult();
       }
 
       JwtService.ValidateSessionToken(sessionToken);
@@ -40,12 +35,7 @@ public class ValidateLoginSession(ILogger<ValidateLoginSession> logger)
     {
       logger.LogError(ex, "{Caller}(): Server Error", nameof(VerifyMagicLink));
 
-      return new ContentResult
-      {
-        Content = "Sorry, we are having trouble logging you in. Please try again later.",
-        ContentType = "text/plain",
-        StatusCode = 500
-      };
+      return new BadRequestResult();
     }
   }
 }

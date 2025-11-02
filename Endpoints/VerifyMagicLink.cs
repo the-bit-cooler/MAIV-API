@@ -27,12 +27,7 @@ public class VerifyMagicLink(DataService dataService, ILogger<VerifyMagicLink> l
       string? token = data?.token;
       if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(token))
       {
-        return new ContentResult
-        {
-          Content = "Magic Link is broken and likely missing link parameters.",
-          ContentType = "text/plain",
-          StatusCode = 400
-        };
+        return new BadRequestResult();
       }
 
       var user = await dataService.GetUserAsync(email, token);
@@ -48,12 +43,7 @@ public class VerifyMagicLink(DataService dataService, ILogger<VerifyMagicLink> l
     {
       logger.LogError(ex, "{Caller}(): Server Error", nameof(VerifyMagicLink));
 
-      return new ContentResult
-      {
-        Content = "Sorry, we are having trouble logging you in. Please try again later.",
-        ContentType = "text/plain",
-        StatusCode = 500
-      };
+      return new BadRequestResult();
     }
   }
 }
