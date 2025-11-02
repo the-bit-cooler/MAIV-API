@@ -3,55 +3,45 @@ using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
 using ScripturAI.Services;
+using System.Text.Json;
 
 namespace ScripturAI;
 
 public class Login(DataService dataService, EmailService emailService, ILogger<Login> logger)
 {
+  internal record RequestBody(string email);
   private readonly DataService dataService = dataService;
   private readonly EmailService emailService = emailService;
   private readonly ILogger<Login> logger = logger;
 
   [Function("Login")]
   public async Task<IActionResult> Run(
-    [HttpTrigger(AuthorizationLevel.Function, "get", Route = "login/{email}")] HttpRequestData req,
-    string email)
+    [HttpTrigger(AuthorizationLevel.Function, "post", Route = "login")] HttpRequestData req)
   {
     try
     {
+      string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+      RequestBody? data = JsonSerializer.Deserialize<RequestBody>(requestBody);
+
+      string? email = data?.email;
       if (!EmailService.ValidateEmail(email))
       {
-        return new ContentResult
-        {
-          Content = "Please use a valid email",
-          ContentType = "text/plain",
-          StatusCode = 400
-        };
+        return new BadRequestResult();
       }
 
-      var user = await dataService.GetUserAsync(email);
+      var user = await dataService.GetUserAsync(email!);
 
       await emailService.SendMagicLinkAsync(user.id, user.token);
 
       logger.LogInformation("{Caller}(): Magic link sent to {email}", nameof(Login), user.id);
 
-      return new ContentResult
-      {
-        Content = $"Please check your inbox (or spam) folder for an email from us at {Environment.GetEnvironmentVariable("AWS_SES_SENDER_EMAIL")}.\n\n. Then click on the link to login!",
-        ContentType = "text/plain",
-        StatusCode = 200
-      };
+      return new OkResult();
     }
     catch (Exception ex)
     {
       logger.LogError(ex, "{Caller}(): Server Error", nameof(Login));
 
-      return new ContentResult
-      {
-        Content = "Sorry, we are having trouble logging you in. Please try again later.",
-        ContentType = "text/plain",
-        StatusCode = 500
-      };
+      return new BadRequestResult();
     }
   }
 }
