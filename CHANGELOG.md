@@ -1,5 +1,30 @@
 # Changelog
 
+## [1.1.0](https://github.com/the-bit-cooler/MAIV-API/compare/maiv-api-v1.0.1...maiv-api-v1.1.0) (2025-11-02)
+
+
+### ✨ Features
+
+* spoof up magic-link-login email content ([d525d85](https://github.com/the-bit-cooler/MAIV-API/commit/d525d855155f67b3e3fe70ebf8b69776c1067c5a))
+
+
+### 🐛 Bug Fixes
+
+* receive jwt as a bearer token instead of in request body ([ae4368e](https://github.com/the-bit-cooler/MAIV-API/commit/ae4368ecff0dca2b9a0df882026982ad2dec1daf))
+* return session token as json ([1e1f3f8](https://github.com/the-bit-cooler/MAIV-API/commit/1e1f3f876f6b75cf0802ad7e0549bf63dd2ecd0a))
+* the ValidateEmail should check for null or empty email string ([7724be5](https://github.com/the-bit-cooler/MAIV-API/commit/7724be5cc4b281eab88cd701adc708370f3f6fe4))
+
+
+### ♻️ Refactors
+
+* change login to post method only with email as json body ([63f886c](https://github.com/the-bit-cooler/MAIV-API/commit/63f886c67dd6deade6c181a3fa79cbc2d2fa1f30))
+* return simple bad requests for all non-ok and let front end handle the messaging ([9437b54](https://github.com/the-bit-cooler/MAIV-API/commit/9437b54408a18f6a64d89ab28cf86e5d15ed7890))
+
+
+### 🧰 Maintenance
+
+* remove unused using statement ([5a85555](https://github.com/the-bit-cooler/MAIV-API/commit/5a85555384c045211a2aad72df3709fd58410b09))
+
 ## [1.0.1](https://github.com/the-bit-cooler/MAIV-API/compare/maiv-api-v1.0.0...maiv-api-v1.0.1) (2025-11-02)
 
 
