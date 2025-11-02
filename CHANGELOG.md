@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.1.0](https://github.com/the-bit-cooler/MAIV-API/compare/v2.0.0...v2.1.0) (2025-11-02)
+
+
+### Features
+
+* add SendGrid package reference for email functionality ([a5cf06b](https://github.com/the-bit-cooler/MAIV-API/commit/a5cf06bdaca0c6db3adbafbcb7279b18de709245))
+* implement email login functionality with magic link and session validation ([d7964e0](https://github.com/the-bit-cooler/MAIV-API/commit/d7964e0927b808f694d512c54ac5c5ed0cbc04e5))
+
 ## [2.0.0](https://github.com/the-bit-cooler/MAIV-API/compare/v1.0.0...v2.0.0) (2025-10-27)
 
 
