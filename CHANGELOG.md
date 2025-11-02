@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/the-bit-cooler/MAIV-API/compare/maiv-api-v1.0.0...maiv-api-v1.0.1) (2025-11-02)
+
+
+### 🧰 Maintenance
+
+* clean up old changelog ([7cf95f4](https://github.com/the-bit-cooler/MAIV-API/commit/7cf95f4524675593fdb7c72c39dce684bbce2b9d))
+
 ## [1.0.0](https://github.com/the-bit-cooler/MAIV-API/compare/maiv-api-v0.1.0...maiv-api-v1.0.0) (2025-11-02)
 
 
