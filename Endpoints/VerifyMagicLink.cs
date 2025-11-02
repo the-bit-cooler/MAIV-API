@@ -4,6 +4,7 @@ using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
 using ScripturAI.Services;
+using System.Net.Http.Json;
 
 namespace ScripturAI;
 
@@ -32,12 +33,10 @@ public class VerifyMagicLink(DataService dataService, ILogger<VerifyMagicLink> l
 
       var user = await dataService.GetUserAsync(email, token);
 
-      return new ContentResult
+      return new JsonResult(new
       {
-        Content = JwtService.CreateSessionToken(user.id),
-        ContentType = "text/plain",
-        StatusCode = 200
-      };
+        sessionToken = JwtService.CreateSessionToken(user.id)
+      });
     }
     catch (Exception ex)
     {
