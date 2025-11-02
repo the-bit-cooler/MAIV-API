@@ -4,7 +4,6 @@ using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
 using ScripturAI.Services;
-using System.Net.Http.Json;
 
 namespace ScripturAI;
 
