@@ -12,6 +12,7 @@ builder.Services
   .AddApplicationInsightsTelemetryWorkerService()
   .ConfigureFunctionsApplicationInsights()
   .AddSingleton<DataService>()
+  .AddSingleton<EmailService>()
   .AddSingleton<AiService>();
 
 builder.Build().Run();
