@@ -31,7 +31,14 @@ public class ValidateLoginSession(ILogger<ValidateLoginSession> logger)
 
       string token = authHeader["Bearer ".Length..].Trim();
 
-      JwtService.ValidateSessionToken(token);
+      try
+      {
+        JwtService.ValidateSessionToken(token);
+      }
+      catch
+      {
+        return new UnauthorizedResult();
+      }
 
       return new OkResult();
     }
@@ -39,7 +46,7 @@ public class ValidateLoginSession(ILogger<ValidateLoginSession> logger)
     {
       logger.LogError(ex, "{Caller}(): Server Error", nameof(VerifyMagicLink));
 
-      return new BadRequestResult();
+      return new StatusCodeResult(500);
     }
   }
 }

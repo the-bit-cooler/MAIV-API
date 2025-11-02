@@ -41,7 +41,8 @@ public class Login(DataService dataService, EmailService emailService, ILogger<L
     {
       logger.LogError(ex, "{Caller}(): Server Error", nameof(Login));
 
-      return new BadRequestResult();
+      return new StatusCodeResult(500)
+;
     }
   }
 }

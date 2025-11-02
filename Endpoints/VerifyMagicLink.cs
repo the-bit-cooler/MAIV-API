@@ -32,6 +32,11 @@ public class VerifyMagicLink(DataService dataService, ILogger<VerifyMagicLink> l
 
       var user = await dataService.GetUserAsync(email, token);
 
+      if (user.tokenExpired)
+      {
+        return new UnauthorizedResult();
+      }
+
       return new JsonResult(new
       {
         sessionToken = JwtService.CreateSessionToken(user.id)
@@ -41,7 +46,7 @@ public class VerifyMagicLink(DataService dataService, ILogger<VerifyMagicLink> l
     {
       logger.LogError(ex, "{Caller}(): Server Error", nameof(VerifyMagicLink));
 
-      return new BadRequestResult();
+      return new StatusCodeResult(500);
     }
   }
 }
