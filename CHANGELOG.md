@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.2](https://github.com/the-bit-cooler/MAIV-API/compare/maiv-api-v1.1.1...maiv-api-v1.1.2) (2025-11-02)
+
+
+### 🐛 Bug Fixes
+
+* add token expired bool so a 401 status code can be used to highlight this ([561a9a7](https://github.com/the-bit-cooler/MAIV-API/commit/561a9a7c91ebb70f0b51ceba85178c58b904b674))
+* use different status codes to better inform front end ([65bac71](https://github.com/the-bit-cooler/MAIV-API/commit/65bac71ca1b5bb00802f370c769daf6461883fb2))
+
 ## [1.1.1](https://github.com/the-bit-cooler/MAIV-API/compare/maiv-api-v1.1.0...maiv-api-v1.1.1) (2025-11-02)
 
 
