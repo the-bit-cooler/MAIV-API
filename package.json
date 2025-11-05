@@ -5,6 +5,7 @@
   "scripts": {
     "format": "dotnet format MAIV-API.sln",
     "generate-jwt-secret": "openssl rand -base64 64 | tr -d '\n' && echo",
+    "generate-local-settings": "chmod +x init-local-settings.sh && bash init-local-settings.sh",
     "prepare": "husky"
   },
   "devDependencies": {
