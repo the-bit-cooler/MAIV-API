@@ -11,7 +11,9 @@ builder.ConfigureFunctionsWebApplication();
 builder.Services
   .AddApplicationInsightsTelemetryWorkerService()
   .ConfigureFunctionsApplicationInsights()
+  .AddHttpClient()
   .AddSingleton<DataService>()
+  .AddSingleton<TokenService>()
   .AddSingleton<AiService>();
 
 builder.Build().Run();
