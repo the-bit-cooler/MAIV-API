@@ -33,7 +33,6 @@ public class AuthSignIn(DataService dataService, TokenService tokenService, ILog
       }
 
       string? email = null;
-      string? name = null;
 
       try
       {
@@ -42,7 +41,6 @@ public class AuthSignIn(DataService dataService, TokenService tokenService, ILog
         if (provider == "test")
         {
           email = "tester@example.com";
-          name = "Local Test";
           logger.LogWarning("⚠️ Short-circuit auth in DEBUG mode - skipping external validation");
         }
         else
@@ -51,13 +49,11 @@ public class AuthSignIn(DataService dataService, TokenService tokenService, ILog
         {
           var payload = await GoogleJsonWebSignature.ValidateAsync(idToken);
           email = payload.Email;
-          name = payload.Name;
         }
         else if (provider == "apple")
         {
           var jwt = await tokenService.ValidateAppleIdTokenAsync(idToken);
           email = jwt.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
-          name = jwt.Claims.FirstOrDefault(c => c.Type == "name")?.Value;
         }
       }
       catch (Exception ex)
@@ -82,7 +78,6 @@ public class AuthSignIn(DataService dataService, TokenService tokenService, ILog
         var user = new Models.User
         {
           id = email,
-          Name = name,
           Provider = provider,
           CreatedAt = DateTime.UtcNow
         };
