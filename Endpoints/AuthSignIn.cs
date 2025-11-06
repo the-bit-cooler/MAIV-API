@@ -78,7 +78,6 @@ public class AuthSignIn(DataService dataService, TokenService tokenService, ILog
         var user = new Models.User
         {
           id = email,
-          Provider = provider,
           CreatedAt = DateTime.UtcNow
         };
 
