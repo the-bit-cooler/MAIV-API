@@ -96,8 +96,7 @@ public class AuthSignIn(DataService dataService, TokenService tokenService, ILog
       return new JsonResult(new
       {
         sessionToken = tokenService.GenerateJwt(email),
-        email,
-        provider
+        email
       });
     }
     catch (Exception ex)
