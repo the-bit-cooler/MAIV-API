@@ -10,12 +10,12 @@ using ScripturAI.Services;
 
 namespace ScripturAI.Functions;
 
-public class AuthSignIn(ILogger<AuthSignIn> logger, DataService dataService, TokenService tokenService)
+public class AuthSignIn(DataService dataService, TokenService tokenService, ILogger<AuthSignIn> logger)
 {
   internal record RequestBody(string idToken);
-  private readonly ILogger<AuthSignIn> logger = logger;
   private readonly DataService dataService = dataService;
   private readonly TokenService tokenService = tokenService;
+  private readonly ILogger<AuthSignIn> logger = logger;
 
   [Function("AuthSignIn")]
   public async Task<IActionResult> Run(
