@@ -18,31 +18,7 @@ public class ValidateLoginSession(TokenService tokenService, ILogger<ValidateLog
   {
     try
     {
-      // 1️⃣ Extract Bearer token
-      if (!req.Headers.TryGetValues("Authorization", out var authHeaderValues))
-      {
-        return new BadRequestResult();
-      }
-
-      var authHeader = authHeaderValues.FirstOrDefault();
-      if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
-      {
-        return new BadRequestResult();
-      }
-
-      string token = authHeader["Bearer ".Length..].Trim();
-      if (string.IsNullOrEmpty(token))
-      {
-        return new BadRequestResult();
-      }
-
-      // 2️⃣ Validate
-      var principal = tokenService.ValidateJwt(token);
-
-      if (principal == null)
-      {
-        return new UnauthorizedResult();
-      }
+      tokenService.ValidateSessionToken(req.Headers, throwOnFailure: true);
 
       return new OkResult();
     }
@@ -50,7 +26,7 @@ public class ValidateLoginSession(TokenService tokenService, ILogger<ValidateLog
     {
       logger.LogError(ex, "{Caller}(): Server Error", nameof(ValidateLoginSession));
 
-      return new StatusCodeResult(500);
+      return new UnauthorizedResult();
     }
   }
 }
