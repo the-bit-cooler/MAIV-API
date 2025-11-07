@@ -5,14 +5,10 @@ using ScripturAI.Services;
 
 namespace ScripturAI;
 
-public class TranslateBibleVerseToModernEnglish
+public class TranslateBibleVerseToModernEnglish(AiService aiService, TokenService tokenService)
 {
-  private readonly AiService aiService;
-
-  public TranslateBibleVerseToModernEnglish(AiService aiService)
-  {
-    this.aiService = aiService;
-  }
+  private readonly AiService aiService = aiService;
+  private readonly TokenService tokenService = tokenService;
 
   [Function("TranslateBibleVerseToModernEnglish")]
   public async Task<IActionResult> Run(
@@ -30,6 +26,7 @@ public class TranslateBibleVerseToModernEnglish
     return new ContentResult
     {
       Content = await aiService.TranslateBibleVerseToModernEnglishAsync(
+        email: tokenService.GetUserEmailFromSessionToken(req.Headers),
         aiMode,
         version,
         book,

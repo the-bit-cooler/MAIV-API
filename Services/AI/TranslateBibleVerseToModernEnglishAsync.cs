@@ -9,9 +9,10 @@ namespace ScripturAI.Services;
 public partial class AiService
 {
   /// <summary>
-  /// Returns either a url to where the new translation was stored or an empty string if none can be obtained.
+  /// Returns either a url to where the new translation was stored or an empty string if none can be obtained or a string directive to be interpreted by the frontend.
   /// </summary>
   internal async Task<string> TranslateBibleVerseToModernEnglishAsync(
+    string? email,
     Mode mode,
     string version,
     string book,
@@ -27,6 +28,9 @@ public partial class AiService
       BlobClient blobClient = await dataService.GetBlobClientAsync($"translation/{version}/{book}/{chapter}/{verse}/{mode}.txt");
 
       if (await blobClient.ExistsAsync()) return blobClient.Uri.ToString();
+
+      string result = await dataService.ConsumeUserCreditAsync(email, callerId);
+      if (result != "ok") return result;
 
       string documentId = $"{book}:{chapter}:{verse}:{version}";
 

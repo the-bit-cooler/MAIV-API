@@ -5,14 +5,10 @@ using ScripturAI.Services;
 
 namespace ScripturAI;
 
-public class ExplainBibleVerse
+public class ExplainBibleVerse(AiService aiService, TokenService tokenService)
 {
-  private readonly AiService aiService;
-
-  public ExplainBibleVerse(AiService aiService)
-  {
-    this.aiService = aiService;
-  }
+  private readonly AiService aiService = aiService;
+  private readonly TokenService tokenService = tokenService;
 
   [Function("ExplainBibleVerse")]
   public async Task<IActionResult> Run(
@@ -30,6 +26,7 @@ public class ExplainBibleVerse
     return new ContentResult
     {
       Content = await aiService.ExplainBibleVerseAsync(
+        email: tokenService.GetUserEmailFromSessionToken(req.Headers),
         aiMode,
         version,
         book,

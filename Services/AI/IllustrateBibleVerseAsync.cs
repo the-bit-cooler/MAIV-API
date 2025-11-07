@@ -7,9 +7,10 @@ namespace ScripturAI.Services;
 public partial class AiService
 {
   /// <summary>
-  /// Returns either a url to where the new illustration was stored or an empty string if none can be obtained.
+  /// Returns either a url to where the new illustration was stored or an empty string if none can be obtained or a string directive to be interpreted by the frontend.
   /// </summary>
   internal async Task<string> IllustrateBibleVerseAsync(
+    string? email,
     string version,
     string book,
     int chapter,
@@ -24,6 +25,9 @@ public partial class AiService
       BlobClient blobClient = await dataService.GetBlobClientAsync($"illustration/{version}/{book}/{chapter}/{verse}.png");
 
       if (await blobClient.ExistsAsync()) return blobClient.Uri.ToString();
+
+      string result = await dataService.ConsumeUserCreditAsync(email, callerId);
+      if (result != "ok") return result;
 
       string documentId = $"{book}:{chapter}:{verse}:{version}";
 
