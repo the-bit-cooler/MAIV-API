@@ -12,6 +12,7 @@ namespace ScripturAI.Functions;
 
 public class AuthSignIn(DataService dataService, TokenService tokenService, ILogger<AuthSignIn> logger)
 {
+  const int FreeTierLimitFallback = 100;
   internal record RequestBody(string idToken);
   private readonly DataService dataService = dataService;
   private readonly TokenService tokenService = tokenService;
@@ -75,14 +76,22 @@ public class AuthSignIn(DataService dataService, TokenService tokenService, ILog
       }
       catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
       {
-        var user = new Models.User
+        // somewhere during user creation or initialization
+        var freeTierEnv = Environment.GetEnvironmentVariable("FREE_TIER_LIMIT");
+
+        int freeTier = FreeTierLimitFallback;
+        if (!string.IsNullOrEmpty(freeTierEnv) && int.TryParse(freeTierEnv, out var parsed))
         {
-          id = email,
-          CreatedAt = DateTime.UtcNow
-        };
+          freeTier = parsed;
+        }
 
         await dataService.GetDataContainer().UpsertItemAsync(
-          user,
+          new Models.User
+          {
+            id = email,
+            FreeTier = freeTier,
+            CreatedAt = DateTime.UtcNow
+          },
           new PartitionKey(nameof(User))
         );
       }
