@@ -22,7 +22,7 @@ public class IllustrateBibleVerse(AiService aiService, TokenService tokenService
     return new ContentResult
     {
       Content = await aiService.IllustrateBibleVerseAsync(
-        email: tokenService.GetUserEmailFromSessionToken(req.Headers),
+        userId: tokenService.GetUserIdFromSessionToken(req.Headers),
         version,
         book,
         chapter,

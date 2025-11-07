@@ -26,7 +26,7 @@ public class TranslateBibleVerseToModernEnglish(AiService aiService, TokenServic
     return new ContentResult
     {
       Content = await aiService.TranslateBibleVerseToModernEnglishAsync(
-        email: tokenService.GetUserEmailFromSessionToken(req.Headers),
+        userId: tokenService.GetUserIdFromSessionToken(req.Headers),
         aiMode,
         version,
         book,

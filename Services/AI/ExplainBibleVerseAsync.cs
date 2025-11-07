@@ -12,7 +12,7 @@ public partial class AiService
   /// Returns either a url to where the explanation was stored or an empty string if none can be obtained or a string directive to be interpreted by the frontend.
   /// </summary>
   internal async Task<string> ExplainBibleVerseAsync(
-    string? email,
+    string? userId,
     Mode mode,
     string version,
     string book,
@@ -29,7 +29,7 @@ public partial class AiService
 
       if (await blobClient.ExistsAsync()) return blobClient.Uri.ToString();
 
-      string result = await dataService.ConsumeUserCreditAsync(email, callerId);
+      string result = await dataService.ConsumeUserCreditAsync(userId, callerId);
       if (result != "ok") return result;
 
       List<ChatMessage> messages =

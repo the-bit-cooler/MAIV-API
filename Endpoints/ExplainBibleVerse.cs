@@ -26,7 +26,7 @@ public class ExplainBibleVerse(AiService aiService, TokenService tokenService)
     return new ContentResult
     {
       Content = await aiService.ExplainBibleVerseAsync(
-        email: tokenService.GetUserEmailFromSessionToken(req.Headers),
+        userId: tokenService.GetUserIdFromSessionToken(req.Headers),
         aiMode,
         version,
         book,

@@ -7,15 +7,14 @@ namespace ScripturAI.Services;
 
 public partial class TokenService
 {
-  public string GenerateJwt(string email)
+  public string GenerateJwt(string subject)
   {
     var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
     var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
     var claims = new[]
     {
-      new Claim(JwtRegisteredClaimNames.Sub, email),
-      new Claim(JwtRegisteredClaimNames.Email, email),
+      new Claim(JwtRegisteredClaimNames.Sub, subject),
       new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
     };
 

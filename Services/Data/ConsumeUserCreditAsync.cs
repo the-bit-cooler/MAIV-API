@@ -6,17 +6,17 @@ namespace ScripturAI.Services;
 
 public partial class DataService
 {
-  internal async Task<string> ConsumeUserCreditAsync(string? email, string caller)
+  internal async Task<string> ConsumeUserCreditAsync(string? userId, string caller)
   {
     string callerId = $"{caller}->{nameof(AiService)}.{nameof(ConsumeUserCreditAsync)}";
 
     // Check whether user has any API credits
-    if (string.IsNullOrEmpty(email)) return "signup";
+    if (string.IsNullOrEmpty(userId)) return "signup";
 
     try
     {
       var container = GetDataContainer();
-      var response = await container.ReadItemAsync<Models.User>(email, new PartitionKey(nameof(User)));
+      var response = await container.ReadItemAsync<Models.User>(userId, new PartitionKey(nameof(User)));
       var user = response.Resource;
 
       if (user.PaidTier > 0)

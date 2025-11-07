@@ -1,4 +1,4 @@
-using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 
@@ -6,7 +6,7 @@ namespace ScripturAI.Services;
 
 public partial class TokenService
 {
-  public ClaimsPrincipal? ValidateSessionToken(HttpHeadersCollection headers, bool throwOnFailure = false)
+  public JwtSecurityToken? ValidateSessionToken(HttpHeadersCollection headers, bool throwOnFailure = false)
   {
     try
     {
@@ -33,16 +33,16 @@ public partial class TokenService
         return null;
       }
 
-      var principal = ValidateJwt(token);
+      var securityToken = ValidateJwt(token);
 
-      if (principal == null)
+      if (securityToken == null)
       {
         if (throwOnFailure)
           throw new UnauthorizedAccessException("Invalid or expired token.");
         return null;
       }
 
-      return principal;
+      return securityToken;
     }
     catch (Exception ex)
     {

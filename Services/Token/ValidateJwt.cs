@@ -7,13 +7,12 @@ namespace ScripturAI.Services;
 
 public partial class TokenService
 {
-  public ClaimsPrincipal? ValidateJwt(string token)
+  public JwtSecurityToken? ValidateJwt(string token)
   {
-    var handler = new JwtSecurityTokenHandler();
-    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
-
     try
     {
+      JwtSecurityTokenHandler jwtHandler = new();
+
       var parameters = new TokenValidationParameters
       {
         ValidateIssuer = true,
@@ -21,12 +20,14 @@ public partial class TokenService
         ValidateAudience = true,
         ValidAudience = audience,
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = key,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret)),
         ValidateLifetime = true,
         ClockSkew = TimeSpan.FromMinutes(2)
       };
 
-      return handler.ValidateToken(token, parameters, out _);
+      jwtHandler.ValidateToken(token, parameters, out var validatedToken);
+
+      return (JwtSecurityToken)validatedToken;
     }
     catch
     {

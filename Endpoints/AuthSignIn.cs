@@ -20,28 +20,28 @@ public class AuthSignIn(DataService dataService, TokenService tokenService, ILog
 
   [Function("AuthSignIn")]
   public async Task<IActionResult> Run(
-      [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "auth-signin/{provider}")] HttpRequestData req, string provider)
+      [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "auth-sign-in/{provider}")] HttpRequestData req, string provider)
   {
     try
     {
-      string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-      RequestBody? data = JsonSerializer.Deserialize<RequestBody>(requestBody);
-
-      var idToken = data?.idToken;
-      if (string.IsNullOrEmpty(idToken))
-      {
-        return new BadRequestResult();
-      }
-
-      string? email = null;
+      string? userId = null;
 
       try
       {
+        string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+        RequestBody? data = JsonSerializer.Deserialize<RequestBody>(requestBody);
+
+        var idToken = data?.idToken;
+        if (string.IsNullOrEmpty(idToken))
+        {
+          throw new Exception("Identity token missing.");
+        }
+
 #if DEBUG
         // 🧪 Short-circuit local test mode
         if (provider == "test")
         {
-          email = "tester@example.com";
+          userId = "1234567890";
           logger.LogWarning("⚠️ Short-circuit auth in DEBUG mode - skipping external validation");
         }
         else
@@ -49,12 +49,17 @@ public class AuthSignIn(DataService dataService, TokenService tokenService, ILog
         if (provider == "google")
         {
           var payload = await GoogleJsonWebSignature.ValidateAsync(idToken);
-          email = payload.Email;
+          userId = payload.Subject;
         }
         else if (provider == "apple")
         {
           var jwt = await tokenService.ValidateAppleIdTokenAsync(idToken);
-          email = jwt.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
+          userId = jwt.Subject ?? jwt.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+        }
+
+        if (string.IsNullOrEmpty(userId))
+        {
+          throw new Exception("Subject missing from identity token.");
         }
       }
       catch (Exception ex)
@@ -63,16 +68,10 @@ public class AuthSignIn(DataService dataService, TokenService tokenService, ILog
         return new UnauthorizedResult();
       }
 
-      if (string.IsNullOrEmpty(email))
-      {
-        logger.LogError("{Caller}(): No email claim in token", nameof(AuthSignIn));
-        return new NotFoundResult();
-      }
-
       // Lookup or create user
       try
       {
-        await dataService.GetDataContainer().ReadItemAsync<Models.User>(email, new PartitionKey(nameof(User)));
+        await dataService.GetDataContainer().ReadItemAsync<Models.User>(userId, new PartitionKey(nameof(User)));
       }
       catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
       {
@@ -85,10 +84,10 @@ public class AuthSignIn(DataService dataService, TokenService tokenService, ILog
           freeTier = parsed;
         }
 
-        await dataService.GetDataContainer().UpsertItemAsync(
+        await dataService.GetDataContainer().CreateItemAsync(
           new Models.User
           {
-            id = email,
+            id = userId,
             FreeTier = freeTier,
             CreatedAt = DateTime.UtcNow
           },
@@ -98,8 +97,7 @@ public class AuthSignIn(DataService dataService, TokenService tokenService, ILog
 
       return new JsonResult(new
       {
-        sessionToken = tokenService.GenerateJwt(email),
-        email
+        sessionToken = tokenService.GenerateJwt(userId)
       });
     }
     catch (Exception ex)

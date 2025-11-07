@@ -10,7 +10,7 @@ public partial class AiService
   /// Returns either a url to where the new illustration was stored or an empty string if none can be obtained or a string directive to be interpreted by the frontend.
   /// </summary>
   internal async Task<string> IllustrateBibleVerseAsync(
-    string? email,
+    string? userId,
     string version,
     string book,
     int chapter,
@@ -26,7 +26,7 @@ public partial class AiService
 
       if (await blobClient.ExistsAsync()) return blobClient.Uri.ToString();
 
-      string result = await dataService.ConsumeUserCreditAsync(email, callerId);
+      string result = await dataService.ConsumeUserCreditAsync(userId, callerId);
       if (result != "ok") return result;
 
       string documentId = $"{book}:{chapter}:{verse}:{version}";

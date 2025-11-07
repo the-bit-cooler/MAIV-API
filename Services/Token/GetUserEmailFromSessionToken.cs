@@ -5,8 +5,9 @@ namespace ScripturAI.Services;
 
 public partial class TokenService
 {
-  public string? GetUserEmailFromSessionToken(HttpHeadersCollection headers)
+  public string? GetUserIdFromSessionToken(HttpHeadersCollection headers)
   {
-    return ValidateSessionToken(headers)?.FindFirst(ClaimTypes.Email)?.Value;
+    var securityToken = ValidateSessionToken(headers);
+    return securityToken?.Subject ?? securityToken?.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
   }
 }
