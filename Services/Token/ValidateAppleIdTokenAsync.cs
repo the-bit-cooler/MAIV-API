@@ -48,7 +48,7 @@ public partial class TokenService
       ValidateIssuer = true,
       ValidIssuer = "https://appleid.apple.com",
       ValidateAudience = true,
-      ValidAudience = Environment.GetEnvironmentVariable("APPLE_BUNDLE_ID")!,
+      ValidAudience = audience,
       ValidateIssuerSigningKey = true,
       IssuerSigningKey = rsaKey,
       ValidateLifetime = true,

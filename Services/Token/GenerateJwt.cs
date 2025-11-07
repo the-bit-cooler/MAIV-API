@@ -21,7 +21,7 @@ public partial class TokenService
 
     var token = new JwtSecurityToken(
       issuer: issuer,
-      audience: issuer,
+      audience: audience,
       claims: claims,
       expires: DateTime.UtcNow.AddDays(7),
       signingCredentials: creds);

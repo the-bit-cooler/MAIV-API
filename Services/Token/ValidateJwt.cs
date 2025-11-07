@@ -17,9 +17,10 @@ public partial class TokenService
       var parameters = new TokenValidationParameters
       {
         ValidateIssuer = true,
-        ValidateAudience = true,
         ValidIssuer = issuer,
-        ValidAudience = issuer,
+        ValidateAudience = true,
+        ValidAudience = audience,
+        ValidateIssuerSigningKey = true,
         IssuerSigningKey = key,
         ValidateLifetime = true,
         ClockSkew = TimeSpan.FromMinutes(2)
