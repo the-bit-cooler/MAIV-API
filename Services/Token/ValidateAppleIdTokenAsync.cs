@@ -7,43 +7,64 @@ namespace ScripturAI.Services;
 
 public partial class TokenService
 {
+  const string ApplePublicKeys = "ApplePublicKeys";
+  const int TwentyFourHours = 86400;
+  private record ApplePublicKeysCache(string id = ApplePublicKeys, string collection = ApplePublicKeys, string jwks = "", int ttl = TwentyFourHours);
   internal async Task<JwtSecurityToken> ValidateAppleIdTokenAsync(string idToken)
   {
-    var jwtHandler = new JwtSecurityTokenHandler();
-    var jwt = jwtHandler.ReadJwtToken(idToken);
+    string? jwks = null;
+    JwtSecurityTokenHandler jwtHandler = new();
+    JwtSecurityToken jwt = jwtHandler.ReadJwtToken(idToken);
 
-    var header = jwt.Header;
-    var kid = header.Kid;
-    var alg = header.Alg;
+    JwtHeader header = jwt.Header;
+    string kid = header.Kid;
+    string alg = header.Alg;
 
     // 1️⃣ Fetch Apple’s public keys
-    var jwks = await httpClient.GetStringAsync("https://appleid.apple.com/auth/keys");
-    /** 
-      * ToDo: Cache Apple public keys for 24hrs (use Cosmos cache)
+    // check the cache first
+    var cacheResponse = await dataService.GetCachedItemAsync<ApplePublicKeysCache>(
+      ApplePublicKeys,
+      ApplePublicKeys,
+      ApplePublicKeys,
+      nameof(ValidateAppleIdTokenAsync)
+    );
 
-      private static (DateTime fetchedAt, string json)? cachedJwks;
-
-      var jwks = cachedJwks?.json;
-      if (jwks == null || (DateTime.UtcNow - cachedJwks.Value.fetchedAt).TotalHours > 24)
+    if (cacheResponse is null)
+    {
+      jwks = await httpClient.GetStringAsync("https://appleid.apple.com/auth/keys");
+      if (string.IsNullOrEmpty(jwks))
       {
-          jwks = await http.GetStringAsync("https://appleid.apple.com/auth/keys");
-          cachedJwks = (DateTime.UtcNow, jwks);
+        throw new SecurityTokenException("Apple Public Keys could not be obtained.");
       }
-    */
-    var keys = JObject.Parse(jwks)["keys"]!.ToObject<List<JObject>>()!;
+      else
+      {
+        await dataService.CacheItemAsync(
+          new ApplePublicKeysCache(jwks: jwks),
+          ApplePublicKeys,
+          ApplePublicKeys,
+          nameof(ValidateAppleIdTokenAsync)
+        );
+      }
+    }
+    else
+    {
+      jwks = cacheResponse.jwks;
+    }
 
-    var matchingKey = keys.FirstOrDefault(k => k["kid"]!.ToString() == kid && k["alg"]!.ToString() == alg);
+    List<JObject> keys = JObject.Parse(jwks)["keys"]!.ToObject<List<JObject>>()!;
+
+    JObject? matchingKey = keys.FirstOrDefault(k => k["kid"]!.ToString() == kid && k["alg"]!.ToString() == alg);
     if (matchingKey == null)
       throw new SecurityTokenException("No matching key found in Apple JWKS");
 
     // 2️⃣ Construct RSA key
-    var n = Base64UrlEncoder.DecodeBytes(matchingKey["n"]!.ToString());
-    var e = Base64UrlEncoder.DecodeBytes(matchingKey["e"]!.ToString());
-    var rsa = new RSAParameters { Modulus = n, Exponent = e };
-    var rsaKey = new RsaSecurityKey(rsa) { KeyId = kid };
+    byte[] n = Base64UrlEncoder.DecodeBytes(matchingKey["n"]!.ToString());
+    byte[] e = Base64UrlEncoder.DecodeBytes(matchingKey["e"]!.ToString());
+    RSAParameters rsa = new() { Modulus = n, Exponent = e };
+    RsaSecurityKey rsaKey = new(rsa) { KeyId = kid };
 
     // 3️⃣ Validate signature and claims
-    var parameters = new TokenValidationParameters
+    TokenValidationParameters parameters = new()
     {
       ValidateIssuer = true,
       ValidIssuer = "https://appleid.apple.com",
