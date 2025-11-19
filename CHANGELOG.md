@@ -1,5 +1,48 @@
 # Changelog
 
+## [2.0.0](https://github.com/the-bit-cooler/MAIV-API/compare/maiv-api-v1.1.2...maiv-api-v2.0.0) (2025-11-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* removing magic link support
+
+### ✨ Features
+
+* **auth:** add AuthSignIn endpoint with Apple/Google OAuth and JWT session handling ([c28811c](https://github.com/the-bit-cooler/MAIV-API/commit/c28811c88b9400d9db41eb380d529a634aef4fcc))
+* **auth:** add reusable SessionValidationService for Bearer token validation across endpoints ([1052504](https://github.com/the-bit-cooler/MAIV-API/commit/1052504ca4418b681a53245655ce290bbb6403c5))
+* **auth:** cache Apple Public Keys for 24 hrs ([2b0a466](https://github.com/the-bit-cooler/MAIV-API/commit/2b0a466dd475c68aa4c7a46f87800230c8bd0f26))
+* **data:** add ConsumeUserCreditAsync to handle atomic user credit decrements ([e056d4e](https://github.com/the-bit-cooler/MAIV-API/commit/e056d4e16c4ffae861d3f61781797d7ab8236a1f))
+* **user:** parse free tier limit env variable into int when creating new user ([a7bebc4](https://github.com/the-bit-cooler/MAIV-API/commit/a7bebc408de41df1811747b709582904aa5bbd0f))
+
+
+### 🐛 Bug Fixes
+
+* **auth:** remove unused passkey class as passkeys will not be supported ([362a387](https://github.com/the-bit-cooler/MAIV-API/commit/362a387d33d23a2464f3453706a107c2d6ed2f7b))
+* **auth:** use maiv bundle id as audience everywhere ([2cd8689](https://github.com/the-bit-cooler/MAIV-API/commit/2cd868988423cbf84f7cc17a2d60ee047adb3e60))
+* removing magic link support ([441ff3a](https://github.com/the-bit-cooler/MAIV-API/commit/441ff3a8f0d55fd32544ebf1db0ae3c6c749fa41))
+* switch to jwt subject and drop email as user id ([f258ef8](https://github.com/the-bit-cooler/MAIV-API/commit/f258ef8adab7696bc70037a9ea471b39a26dc713))
+* **user:** do not track or store name, just email ([6155b10](https://github.com/the-bit-cooler/MAIV-API/commit/6155b109d0310e869699ba3a930d20d7c018f5d9))
+* **user:** do not track or store signin provider ([dac360f](https://github.com/the-bit-cooler/MAIV-API/commit/dac360f71873b213716f0f78f3cab5937ffd3af2))
+
+
+### 🏗️ Build System
+
+* remove /api prefix from Azure Function routes for cleaner public URLs ([06033a0](https://github.com/the-bit-cooler/MAIV-API/commit/06033a0e4456265fb3d954c26250626d487c7d72))
+
+
+### 🧰 Maintenance
+
+* add init-local-settings script for Codespaces setup ([ad4395d](https://github.com/the-bit-cooler/MAIV-API/commit/ad4395da8615520fe0f12605b7949b2959b51447))
+* remove unneeded provider from response ([cdfe5b2](https://github.com/the-bit-cooler/MAIV-API/commit/cdfe5b222481c79e7cfb22a80408c6056549d183))
+* reorder dep injection params ([813231a](https://github.com/the-bit-cooler/MAIV-API/commit/813231a8fa3c9ca480675b873dd4eb6c03247a6c))
+* **user:** remove unused passkeys array from user object as it will not be supported ([1fd3e36](https://github.com/the-bit-cooler/MAIV-API/commit/1fd3e36516e1c113eed914e6199233e4c30145e2))
+
+
+### ⏪ Reverts
+
+* **auth:** readd ValidateLoginSession while using new token service ([7ed4a3e](https://github.com/the-bit-cooler/MAIV-API/commit/7ed4a3e25b5d4c9ea8dc19722d2cd86305554164))
+
 ## [1.1.2](https://github.com/the-bit-cooler/MAIV-API/compare/maiv-api-v1.1.1...maiv-api-v1.1.2) (2025-11-02)
 
 
